@@ -1,6 +1,5 @@
 from pydantic import BaseModel
 
-
 class RemoteClientSchema(BaseModel):
     host: str
     user: str

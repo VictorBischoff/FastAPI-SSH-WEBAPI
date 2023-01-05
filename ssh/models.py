@@ -1,16 +1,12 @@
 """Client to handle connections and actions executed against a remote host."""
 from os import system
 from typing import List
-
 from paramiko import AutoAddPolicy, Ed25519Key, SSHClient
 from paramiko.auth_handler import AuthenticationException, SSHException
-
-
 from log import LOGGER
 
-
 class RemoteClient:
-    """Client to interact with a remote host via SSH & SCP."""
+    """Client to interact with a remote host via SSH"""
 
     def __init__(
         self,
@@ -46,12 +42,14 @@ class RemoteClient:
                 f"AuthenticationException occurred; did you remember to generate an SSH key? {e}"
             )
         except Exception as e:
-            LOGGER.error(f"Unexpected error occurred while connecting to host: {e}")
+            LOGGER.error(
+                f"Unexpected error occurred while connecting to host: {e}")
 
     def _get_ssh_key(self):
         """Fetch locally stored SSH key."""
         try:
-            self.ssh_key = Ed25519Key.from_private_key_file(self.ssh_key_filepath)
+            self.ssh_key = Ed25519Key.from_private_key_file(
+                self.ssh_key_filepath)
             LOGGER.info(f"Found SSH key at self {self.ssh_key_filepath}")
             return self.ssh_key
         except SSHException as e:
@@ -75,14 +73,12 @@ class RemoteClient:
         if self.connection:
             self.client.close()
 
-
     def execute_commands(self, commands: List[str]):
+        """Execute a list of commands on the remote host."""
         for cmd in commands:
             if cmd.startswith("sudo"):
-                # Add the password argument to the `sudo` command.
-                #cmd = f"{cmd} -S"
-                # Send the password to `sudo` through the stdin of the remote command.
-                stdin, stdout, stderr = self.connection.exec_command(cmd, get_pty=True)
+                stdin, stdout, stderr = self.connection.exec_command(
+                    cmd, get_pty=True)
                 stdin.write(f"{self.password}\n")
                 stdin.flush()
             else:

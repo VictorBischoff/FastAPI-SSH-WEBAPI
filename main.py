@@ -1,12 +1,9 @@
 from fastapi import FastAPI, HTTPException
-from typing import List
 from ssh.models import RemoteClient
 from ssh.schemas import RemoteClientSchema
 import uvicorn
 
 app = FastAPI()
-
-
 
 @app.post("/execute-commands")
 async def execute_commands(RemoteClientSchema: RemoteClientSchema):
